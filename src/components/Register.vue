@@ -205,8 +205,18 @@ export default {
             redirect: "follow",
           };
           fetch("http://spa-magaz/api/user/register", requestOptions)
-            .then((response) => response.json())
-            .then((result) => localStorage.setItem   ("token", result[0].data.token))
+            .then(function (response) {
+              return response.json();
+            })
+            .then(function (result) {
+              // console.log(result);
+              if (!result[0].errors) {
+                localStorage.setItem("token", result[0].data.token);
+              }
+            })
+            // .then((result) =>
+            //   localStorage.setItem("token", result[0].data.token)
+            // )
             .catch((error) => console.error(error));
         } catch (error) {
           alert("ошибка какая-то");
