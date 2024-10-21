@@ -210,13 +210,12 @@ export default {
             })
             .then(function (result) {
               // console.log(result);
-              if (!result[0].errors) {
-                localStorage.setItem("token", result[0].data.token);
+              if (!result.errors) {
+               localStorage.setItem('token',result.data.token);
+              //  localStorage.setItem('token',result.data.token);
+
               }
             })
-            // .then((result) =>
-            //   localStorage.setItem("token", result[0].data.token)
-            // )
             .catch((error) => console.error(error));
         } catch (error) {
           alert("ошибка какая-то");
