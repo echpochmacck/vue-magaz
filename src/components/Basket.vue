@@ -88,7 +88,7 @@ export default {
         const myHeaders = new Headers();
         myHeaders.append(
           "Authorization",
-          "Bearer " +  this.$router.value
+          "Bearer " +  this.$token.value
         );
         const requestOptions = {
           method: "GET",
@@ -106,7 +106,7 @@ export default {
       const myHeaders = new Headers();
       myHeaders.append(
         "Authorization",
-        "Bearer " +  this.$router.value
+        "Bearer " + this.$token.value
       );
       const formdata = new FormData();
       formdata.append("product_id", index);
@@ -145,7 +145,7 @@ export default {
       const myHeaders = new Headers();
       myHeaders.append(
         "Authorization",
-        "Bearer " + localStorage.getItem("token")
+        "Bearer " + this.$token.value
       );
       const requestOptions = {
         method: "GET",

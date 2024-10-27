@@ -133,7 +133,7 @@ export default {
       const myHeaders = new Headers();
       myHeaders.append(
         "Authorization",
-        "Bearer " + this.$router.value
+        "Bearer " + this.$token.value
       );
       const formdata = new FormData();
       formdata.append("product_id", index);
