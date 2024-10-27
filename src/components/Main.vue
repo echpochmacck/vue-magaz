@@ -1,12 +1,7 @@
 <template>
   <main id="main" class="flex-shrink-0" role="main">
     <div class="container">
-      <nav aria-label="breadcrumb">
-        <ol id="w3" class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/">Главная</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Витрина</li>
-        </ol>
-      </nav>
+
       <div class="products-index">
         <h1>Витрина</h1>
         <div class="user-cash">
@@ -92,7 +87,7 @@
           </div>
         </div>
       </div>
-      <a class="btn btn-primary" href="/orders/make-order">Заказать</a>
+      <!-- < a class="btn btn-primary" href="/orders/make-order">Заказать</> -->
     </div>
   </main>
 </template>
@@ -105,12 +100,13 @@ export default {
       cash: null,
     };
   },
-  mounted() {
+  beforeMount() {
+    // alert(this.$foo)
     try {
       const myHeaders = new Headers();
       myHeaders.append(
         "Authorization",
-        "Bearer " + localStorage.getItem("token")
+        "Bearer " + this.$token.value
       );
 
       const requestOptions = {
@@ -120,7 +116,11 @@ export default {
       };
 
       fetch("http://spa-magaz/api/products", requestOptions)
-        .then((response) => response.json())
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json();
+          }
+        })
         .then((result) => (this.goods = result.data))
         .catch((error) => console.error(error));
     } catch (error) {
@@ -133,7 +133,7 @@ export default {
       const myHeaders = new Headers();
       myHeaders.append(
         "Authorization",
-        "Bearer " + localStorage.getItem("token")
+        "Bearer " + this.$router.value
       );
       const formdata = new FormData();
       formdata.append("product_id", index);

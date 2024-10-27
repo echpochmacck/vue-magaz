@@ -211,8 +211,9 @@ export default {
             .then(function (result) {
               // console.log(result);
               if (!result.errors) {
-               localStorage.setItem('token',result.data.token);
-              //  localStorage.setItem('token',result.data.token);
+                this.$token.value = result.data.token;
+                 localStorage.setItem('token',result.data.token);
+                 localStorage.setItem('isAdmin',result.data.isAdmin);
 
               }
             })
@@ -223,6 +224,14 @@ export default {
       } else {
         console.log("ошибка");
       }
+    },
+    setToken(token) {
+      this.$token = token;
+    },
+  },
+  computed: {
+    token() {
+      return this.$token;
     },
   },
 };

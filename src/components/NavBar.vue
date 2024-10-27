@@ -14,22 +14,54 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div id="w1-collapse" class="collapse navbar-collapse" >
+        <div id="w1-collapse" class="collapse navbar-collapse">
           <ul id="w2" class="navbar-nav nav">
             <!-- <li class="nav-item">
               <a class="nav-link active" href="/site/register">вход</a>
             </li> -->
-            <router-link to="/login" custom v-slot="{ navigate }" v-if=" !token"  >
+            <router-link
+              to="/login"
+              custom
+              v-slot="{ navigate }"
+              v-if="!$token.value"
+            >
               <li class="nav-item">
                 <a href="#" class="nav-link" @click="navigate">Вход</a>
               </li>
             </router-link>
+            <div v-if="$token.value" class="isUser">
+              <router-link to="/basket" custom v-slot="{ navigate }">
+                <li class="nav-item">
+                  <a href="#" class="nav-link" @click="navigate"
+                    >просмотреть корзину</a
+                  >
+                </li>
+              </router-link>
 
-            <router-link to="/basket" custom v-slot="{ navigate }" v-if="token" >
-              <li class="nav-item">
-                <a href="#" class="nav-link" @click="navigate">просмотреть корзину</a>
+              <router-link to="/user" custom v-slot="{ navigate }">
+                <li class="nav-item">
+                  <a href="#" class="nav-link" @click="navigate"
+                    >Личнаый кабинет</a
+                  >
+                </li>
+              </router-link>
+              <router-link to="/orders" custom v-slot="{ navigate }">
+                <li class="nav-item">
+                  <a href="#" class="nav-link" @click="navigate"
+                    >Посмотреть заказы</a
+                  >
+                </li>
+              </router-link>
+              <!-- {{console.log($isAdmin.value)}} -->
+              <li class="isAdmin" v-if="$isAdmin.value == 'true'">
+                <router-link to="/admin" custom v-slot="{ navigate }">
+                  <a href="#" class="nav-link" @click="navigate"
+                    >Управление заками</a
+                  >
+                </router-link>
               </li>
-            </router-link>
+            </div>
+
             <!-- <li class="nav-item">
               <a class="nav-link" href="/site/login">Login</a>
             </li> -->
@@ -42,12 +74,20 @@
 
 <script>
 export default {
-computed: {
-  token() {
-    return localStorage.getItem('token');
-  }
-}
+  computed: {
+    token() {
+      return localStorage.getItem("token");
+    },
+  },
+  // mounted() {
+  //   alert(this.$isAdmin.value)
+  // }
 };
 </script>
 
-<style></style>
+<style>
+.isUser {
+  display: flex;
+  justify-content: space-between;
+}
+</style>

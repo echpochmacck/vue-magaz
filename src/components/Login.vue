@@ -73,6 +73,7 @@ export default {
     return {
       password: "",
       login: "",
+      // token: null,
       errors: {},
     };
   },
@@ -115,10 +116,15 @@ export default {
             .then(function (response) {
               return response.json();
             })
-            .then(function (result) {
-              //   alert(result + "");
+            .then((result) => {
               if (!result.errors) {
+                this.$token.value = result.data.token;
                 localStorage.setItem("token", result.data.token);
+                // alert(typeof(result.data.isAdmin))
+                localStorage.setItem("isAdmin", result.data.isAdmin);
+
+                // Теперь `this` ссылается на компонент
+                // alert(this.$token.value);
                 router.push("/main");
               }
             })
@@ -130,7 +136,16 @@ export default {
         console.log("ошибка");
       }
     },
+    // setToken(token) {
+    //   this.$token = token;
+    //   return true;
+    // },
   },
+  // computed: {
+  //   token() {
+  //     return this.$token;
+  //   },
+  // },
 };
 </script>
 
