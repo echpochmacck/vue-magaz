@@ -60,6 +60,10 @@
                   >
                 </router-link>
               </li>
+
+              <li class="isAdmin" v-if="$token.value">
+                <a href="#" class="nav-link" @click.prevent="logout">Выход</a>
+              </li>
             </div>
 
             <!-- <li class="nav-item">
@@ -77,6 +81,31 @@ export default {
   computed: {
     token() {
       return localStorage.getItem("token");
+    },
+  },
+  methods: {
+    logout() {
+      // alert('dsd')
+      localStorage.clear()
+
+      const myHeaders = new Headers();
+      myHeaders.append(
+        "Authorization",
+        "Bearer DQE-m6Ys0KEutZRtL3dZw42G9F5DRiXO"
+      );
+
+      const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+
+      fetch("http://spa-magaz/api/user/logout", requestOptions)
+        .then(() => {
+          this.$router.push("/");
+
+        })
+        .catch((error) => console.error(error));
     },
   },
   // mounted() {

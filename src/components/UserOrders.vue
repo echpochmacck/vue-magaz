@@ -86,7 +86,7 @@ export default {
     };
   },
   mounted() {
-//    alert(this.$token.value)
+    //    alert(this.$token.value)
     try {
       const myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + this.$token.value);
@@ -98,12 +98,15 @@ export default {
       };
 
       fetch("http://spa-magaz/api/admin/orders", requestOptions)
-        .then((response) => {
+        .then( async (response) => {
           if (response.status === 200) {
-            return response.json();
+           const result = await response.json();
+            this.orders = result.data
+          } else if (response.status == 404) {
+            // alert('dsd')
+            this.$router.push("/NotFound");
           }
         })
-        .then((result) => (this.orders = result.data))
         .catch((error) => console.error(error));
     } catch (error) {
       alert("ошибка какая-то");

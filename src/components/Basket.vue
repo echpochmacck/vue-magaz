@@ -1,12 +1,6 @@
 <template>
   <main id="main" class="flex-shrink-0" role="main">
     <div class="container">
-      <nav aria-label="breadcrumb">
-        <ol id="w3" class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/">Главная</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Orders</li>
-        </ol>
-      </nav>
       <div class="orders-index">
         <h1>Orders</h1>
 
@@ -86,10 +80,7 @@ export default {
     getBasket() {
       try {
         const myHeaders = new Headers();
-        myHeaders.append(
-          "Authorization",
-          "Bearer " +  this.$token.value
-        );
+        myHeaders.append("Authorization", "Bearer " + this.$token.value);
         const requestOptions = {
           method: "GET",
           headers: myHeaders,
@@ -104,10 +95,7 @@ export default {
     },
     addToBasket(index) {
       const myHeaders = new Headers();
-      myHeaders.append(
-        "Authorization",
-        "Bearer " + this.$token.value
-      );
+      myHeaders.append("Authorization", "Bearer " + this.$token.value);
       const formdata = new FormData();
       formdata.append("product_id", index);
       const requestOptions = {
@@ -117,16 +105,20 @@ export default {
         redirect: "follow",
       };
       fetch("http://spa-magaz/api/order/basket", requestOptions)
-        .then((response) => response.json())
-        .then((result) => (this.basket = result.data.products))
+      .then(async (response) => {
+        if (response.status == 200) {
+          const data = await response.json(); 
+          this.basket = data.data.products; 
+        } else if (response.status == 404) {
+          this.$router.push("/NotFound");
+        }
+      })
+        // .then((result) => (this.basket = result.data.products))
         .catch((error) => console.error(error));
     },
     removeFromBasket(index) {
       const myHeaders = new Headers();
-      myHeaders.append(
-        "Authorization",
-        "Bearer " +  this.$token.value
-      );
+      myHeaders.append("Authorization", "Bearer " + this.$token.value);
       const formdata = new FormData();
       formdata.append("product_id", index);
       const requestOptions = {
@@ -143,10 +135,7 @@ export default {
 
     makeOreder() {
       const myHeaders = new Headers();
-      myHeaders.append(
-        "Authorization",
-        "Bearer " + this.$token.value
-      );
+      myHeaders.append("Authorization", "Bearer " + this.$token.value);
       const requestOptions = {
         method: "GET",
         headers: myHeaders,

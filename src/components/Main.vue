@@ -1,7 +1,6 @@
 <template>
   <main id="main" class="flex-shrink-0" role="main">
     <div class="container">
-
       <div class="products-index">
         <h1>Витрина</h1>
         <div class="user-cash">
@@ -104,10 +103,7 @@ export default {
     // alert(this.$foo)
     try {
       const myHeaders = new Headers();
-      myHeaders.append(
-        "Authorization",
-        "Bearer " + this.$token.value
-      );
+      myHeaders.append("Authorization", "Bearer " + this.$token.value);
 
       const requestOptions = {
         method: "GET",
@@ -116,12 +112,14 @@ export default {
       };
 
       fetch("http://spa-magaz/api/products", requestOptions)
-        .then((response) => {
-          if (response.status === 200) {
-            return response.json();
+        .then(async (response) => {
+          if (response.status == 200) {
+            const data = await response.json();
+            this.goods = data.data;
+          } else if (response.status == 404) {
+            this.$router.push("/NotFound");
           }
         })
-        .then((result) => (this.goods = result.data))
         .catch((error) => console.error(error));
     } catch (error) {
       alert("ошибка какая-то");
@@ -131,10 +129,7 @@ export default {
   methods: {
     addProduct(index) {
       const myHeaders = new Headers();
-      myHeaders.append(
-        "Authorization",
-        "Bearer " + this.$token.value
-      );
+      myHeaders.append("Authorization", "Bearer " + this.$token.value);
       const formdata = new FormData();
       formdata.append("product_id", index);
       const requestOptions = {

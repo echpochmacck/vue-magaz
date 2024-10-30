@@ -73,6 +73,9 @@ export default {
           if (response.status == 200) {
             console.log(response)
             return response.json();
+          } else if(response.status == 404){
+            // alert('dsd')
+            this.$router.push('/NotFound')
           }
         })
         .then((result) => (this.info = result.data))

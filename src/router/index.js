@@ -9,6 +9,8 @@ import Orders from '../components/Orders'
 import Order from '../components/Order'
 import UserOrders from '../components/UserOrders'
 import OrderForm from '../components/OrderForm'
+import NotFound from '../components/NotFound'
+
 
 
 
@@ -66,6 +68,7 @@ const routes = [
     name: 'OrderForm',
     component: localStorage.getItem('isAdmin') == 'true' ? OrderForm : Main
   },
+  { path: '/:notFound(.*)', component: NotFound }
 
 
 
