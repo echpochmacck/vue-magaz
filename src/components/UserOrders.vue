@@ -87,30 +87,32 @@ export default {
   },
   mounted() {
     //    alert(this.$token.value)
-    try {
-      const myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + this.$token.value);
+    this.getUserOrders()
+  },
+  methods: {
+   async  getUserOrders() {
+      try {
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + this.$token.value);
 
-      const requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-      };
+        const requestOptions = {
+          method: "GET",
+          headers: myHeaders,
+          redirect: "follow",
+        };
 
-      fetch("http://spa-magaz/api/admin/orders", requestOptions)
-        .then( async (response) => {
-          if (response.status === 200) {
-           const result = await response.json();
-            this.orders = result.data
-          } else if (response.status == 404) {
-            // alert('dsd')
-            this.$router.push("/NotFound");
-          }
-        })
-        .catch((error) => console.error(error));
-    } catch (error) {
-      alert("ошибка какая-то");
-    }
+        const response = await fetch("http://spa-magaz/api/admin/orders", requestOptions)
+            if (response.status === 200) {
+              const result = await response.json();
+              this.orders = result.data;
+            } else if (response.status == 404) {
+              // alert('dsd')
+              this.$router.push("/NotFound");
+            }
+      } catch (error) {
+        alert("ошибка какая-то");
+      }
+    },
   },
 };
 </script>

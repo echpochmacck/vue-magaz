@@ -1,12 +1,6 @@
 <template>
   <main id="main" class="flex-shrink-0 my-5" role="main">
-    <div class="container">
-      <nav aria-label="breadcrumb">
-        <ol id="w3" class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/">Главная</a></li>
-          <li class="breadcrumb-item active" aria-current="page">dsdsad</li>
-        </ol>
-      </nav>
+    <div class="container pt-5">
       <div class="user-view" v-if="info">
         <!-- <p>
                     </p> -->
@@ -65,7 +59,6 @@ export default {
       const requestOptions = {
         method: "GET",
         headers: myHeaders,
-        redirect: "follow",
       };
 
       fetch("http://spa-magaz/api/user/info", requestOptions)

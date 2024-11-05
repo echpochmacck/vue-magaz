@@ -25,50 +25,88 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: !localStorage.getItem('token') ? Register : Main
+    component: Register,
+    beforeEnter: (to, from, next) => {
+      if (!localStorage.getItem('token')) {
+        // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
+        next();
+      } else {
+        // Если токен есть, перенаправляем на страницу "/main"
+        next('/main');
+      }
+    },
   },
   {
     path: '/login',
     name: 'login',
-    component: Login
+    component: Login,
+    beforeEnter: () => {
+      if (!localStorage.getItem('item')) {
+        return true
+
+      } else {
+        return false
+      }
+    },
   },
   {
     path: '/main',
     name: 'main',
-    component: Main
+    component: Main,
+    beforeEnter: () => {
+      return localStorage.getItem('item')
+    }
   },
   {
     path: '/basket',
     name: 'basket',
-    component: Basket
-  },
+    component: Basket,
+    beforeEnter: () => {
+      return localStorage.getItem('item')
+    }
+    },
   {
     path: '/user',
     name: 'user',
-    component: UserInfo
+    component: UserInfo,
+    beforeEnter: () => {
+      return localStorage.getItem('item')
+    }
   },
   {
     path: '/orders',
     name: 'orders',
-    component: Orders
+    component: Orders,
+    beforeEnter: () => {
+      return localStorage.getItem('item')
+    }
   },
 
   {
     path: '/order/:id',
     name: 'Order',
-    component: Order
+    component: Order,
+    beforeEnter: () => {
+      return localStorage.getItem('item')
+    }
   },
   {
     path: '/admin',
     name: 'Admin',
-    component: localStorage.getItem('isAdmin') == 'true' ? UserOrders : Main
+    component: localStorage.getItem('isAdmin') == 'true' ? UserOrders : Main,
+    beforeEnter: () => {
+      return localStorage.getItem('item')
+    }
   },
   {
     path: '/admin/order',
     name: 'OrderForm',
-    component: localStorage.getItem('isAdmin') == 'true' ? OrderForm : Main
+    component: localStorage.getItem('isAdmin') == 'true' ? OrderForm : Main,
+    beforeEnter: () => {
+      return localStorage.getItem('item')
+    },
   },
-  { path: '/:notFound(.*)', component: NotFound }
+  { path: '/:pathmatch(.*)*', component: NotFound }
 
 
 

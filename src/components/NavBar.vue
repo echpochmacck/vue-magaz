@@ -2,7 +2,15 @@
   <header id="header">
     <nav id="w1" class="navbar-expand-md navbar-dark bg-dark fixed-top navbar">
       <div class="container">
-        <a class="navbar-brand" href="/">Магазин</a>
+        <router-link
+              to="/"
+              custom
+              v-slot="{ navigate }"
+            >
+              <li class="nav-item">
+                <a href="#" class="nav-link" @click="navigate">Главная</a>
+              </li>
+            </router-link>
         <button
           type="button"
           class="navbar-toggler"
@@ -56,7 +64,7 @@
               <li class="isAdmin" v-if="$isAdmin.value == 'true'">
                 <router-link to="/admin" custom v-slot="{ navigate }">
                   <a href="#" class="nav-link" @click="navigate"
-                    >Управление заками</a
+                    >Управление заказами</a
                   >
                 </router-link>
               </li>
@@ -78,6 +86,9 @@
 
 <script>
 export default {
+  mounted(){
+    // alert(typeof(this.$isAdmin.value))
+  },
   computed: {
     token() {
       return localStorage.getItem("token");
@@ -87,11 +98,13 @@ export default {
     logout() {
       // alert('dsd')
       localStorage.clear()
+      this.$token.value = null;
+      
 
       const myHeaders = new Headers();
       myHeaders.append(
         "Authorization",
-        "Bearer DQE-m6Ys0KEutZRtL3dZw42G9F5DRiXO"
+        "Bearer "+ this.$token.value
       );
 
       const requestOptions = {
@@ -103,7 +116,6 @@ export default {
       fetch("http://spa-magaz/api/user/logout", requestOptions)
         .then(() => {
           this.$router.push("/");
-
         })
         .catch((error) => console.error(error));
     },

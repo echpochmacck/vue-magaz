@@ -50,7 +50,7 @@ export default {
     };
   },
   methods: {
-    changeStatus() {
+    async changeStatus() {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
       myHeaders.append("Authorization", "Bearer " + this.$token.value);
@@ -65,16 +65,17 @@ export default {
         redirect: "follow",
       };
 
-      fetch("http://spa-magaz/api/admin/order?order_id=15", requestOptions)
-        .then((response) => {
+      const response = await fetch(
+        "http://spa-magaz/api/admin/order?order_id=15",
+        requestOptions
+      )
+      
           if (response.status == 200) {
-            this.$router.push('/admin/');
+            this.$router.push("/admin/");
           } else {
-            alert("ошибка")
+            alert("ошибка");
           }
-        })
         // .then((result) => console.log(result))
-        .catch((error) => console.error(error));
     },
   },
 };

@@ -27,7 +27,9 @@
                   aria-invalid="true"
                   v-model="login"
                 />
-                <div class="col-lg-7 invalid-feedback"></div>
+                <div class="col-lg-7 invalid-feedback" v-if="errors">
+                  {{ errors }}
+                </div>
               </div>
               <div class="mb-3 field-loginform-password required">
                 <label
@@ -74,30 +76,24 @@ export default {
       password: "",
       login: "",
       // token: null,
-      errors: {},
+      errors: null,
     };
   },
   methods: {
     formIsValid() {
       let formIsValid = true;
       // Проверка логина
-      if (this.login.length > 0) {
-        this.errors.login = "";
-      } else {
-        this.errors.login = "Пустой логин";
+      if (this.login.length < 0) {
         formIsValid = false;
+        alert("поля не могут быть пустыми");
       }
-      // Пароль
-      if (this.password.length > 0) {
-        this.errors.password = "";
-      } else {
-        this.errors.password = "Пустой пароль";
+      if (this.password.length < 0) {
         formIsValid = false;
+        alert("поля не могут быть пустыми");
       }
       return formIsValid;
     },
-    submitHandler() {
-      // alert(this.name)
+    async submitHandler() {
       if (this.formIsValid()) {
         const router = this.$router;
         try {
@@ -110,42 +106,29 @@ export default {
               login: this.login,
               password: this.password,
             }),
-            // redirect: "follow",
           };
-          fetch("http://spa-magaz/api/user/login", requestOptions)
-            .then(function (response) {
-              return response.json();
-            })
-            .then((result) => {
-              if (!result.errors) {
-                this.$token.value = result.data.token;
-                localStorage.setItem("token", result.data.token);
-                // alert(typeof(result.data.isAdmin))
-                localStorage.setItem("isAdmin", result.data.isAdmin);
-
-                // Теперь `this` ссылается на компонент
-                // alert(this.$token.value);
-                router.push("/main");
-              }
-            })
-            .catch((error) => console.error(error));
+          const result = await fetch(
+            "http://spa-magaz/api/user/login",
+            requestOptions
+          );
+          if (result.status == 201) {
+            const res = await result.json();
+            localStorage.setItem("token", res.data.token);
+            localStorage.setItem("isAdmin", res.data.isAdmin);
+            this.$token.value = res.data.token;
+            router.push("/main");
+          } else {
+            const errorData = await result.json();
+            this.errors = errorData.errors;
+          }
         } catch (error) {
-          alert("ошибка какая-то");
+          alert(error);
         }
       } else {
         console.log("ошибка");
       }
     },
-    // setToken(token) {
-    //   this.$token = token;
-    //   return true;
-    // },
   },
-  // computed: {
-  //   token() {
-  //     return this.$token;
-  //   },
-  // },
 };
 </script>
 

@@ -77,7 +77,7 @@ export default {
   },
 
   methods: {
-    getBasket() {
+    async getBasket() {
       try {
         const myHeaders = new Headers();
         myHeaders.append("Authorization", "Bearer " + this.$token.value);
@@ -85,15 +85,17 @@ export default {
           method: "GET",
           headers: myHeaders,
         };
-        fetch("http://spa-magaz/api/order/getBasket", requestOptions)
-          .then((response) => response.json())
-          .then((result) => (this.basket = result.data.products))
-          .catch((error) => console.error(error));
+        const response = await fetch(
+          "http://spa-magaz/api/order/getBasket",
+          requestOptions
+        );
+        const res = await response.json();
+        this.basket = res.data.products;
       } catch (error) {
         alert("ошибка какая-то");
       }
     },
-    addToBasket(index) {
+    async addToBasket(index) {
       const myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + this.$token.value);
       const formdata = new FormData();
@@ -104,19 +106,19 @@ export default {
         body: formdata,
         redirect: "follow",
       };
-      fetch("http://spa-magaz/api/order/basket", requestOptions)
-      .then(async (response) => {
-        if (response.status == 200) {
-          const data = await response.json(); 
-          this.basket = data.data.products; 
-        } else if (response.status == 404) {
-          this.$router.push("/NotFound");
-        }
-      })
-        // .then((result) => (this.basket = result.data.products))
-        .catch((error) => console.error(error));
+      const response = await fetch(
+        "http://spa-magaz/api/order/basket",
+        requestOptions
+      );
+      if (response.status == 200) {
+        const data = await response.json();
+        this.basket = data.data.products;
+      } else if (response.status == 404) {
+        this.$router.push("/NotFound");
+      }
+      // .then((result) => (this.basket = result.data.products))
     },
-    removeFromBasket(index) {
+    async removeFromBasket(index) {
       const myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + this.$token.value);
       const formdata = new FormData();
@@ -127,10 +129,16 @@ export default {
         body: formdata,
         redirect: "follow",
       };
-      fetch("http://spa-magaz/api/order/basket/remove", requestOptions)
-        .then((response) => response.json())
-        .then((result) => (this.basket = result.data.products))
-        .catch((error) => console.error(error));
+      const response = await fetch(
+        "http://spa-magaz/api/order/basket/remove",
+        requestOptions
+      );
+      if (response.status == 200) {
+        const data = await response.json();
+        this.basket = data.data.products;
+      } else if (response.status == 404) {
+        this.$router.push("/NotFound");
+      }
     },
 
     makeOreder() {

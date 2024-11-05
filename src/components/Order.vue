@@ -1,6 +1,6 @@
 <template>
   <main id="main" class="flex-shrink-0" role="main">
-    <div class="container">
+    <div class="container pt-3">
       <div class="orders-view" v-if="order">
         <!-- <h1>14</h1> -->
         <table id="w0" class="table table-striped table-bordered detail-view">
@@ -36,13 +36,15 @@ export default {
       //   cash: null,
     };
   },
-  mounted() {
-    try {
+  async mounted() {
+    this.getOrder()
+  },
+  // alert(this.orderId)
+  methods:{
+   async getOrder() {
+       try {
       const myHeaders = new Headers();
-      myHeaders.append(
-        "Authorization",
-        "Bearer " +  this.$token.value
-      );
+      myHeaders.append("Authorization", "Bearer " + this.$token.value);
 
       const requestOptions = {
         method: "GET",
@@ -50,22 +52,22 @@ export default {
         redirect: "follow",
       };
 
-      fetch(`http://spa-magaz/api/orders/${this.orderId}`, requestOptions)
-        .then((response) => {
-          if (response.status == 200) {
-            // response = response.json();
-            return response.json();
-          } else if(response.status == 404){
-            // alert('dsd')
-            this.$router.push('/NotFound')
-          }
-        })
-        .then((result) => this.order = result.data.order)
-        .catch((error) => console.error(error));
+      const response = await fetch(
+        `http://spa-magaz/api/orders/${this.orderId}`,
+        requestOptions
+      );
+
+      if (response.status == 200) {
+        const res = await response.json();
+        this.order = res.data.order
+        console.log(res.data.order)
+      } else if (response.status == 404) {
+        this.$router.push("/NotFound");
+      }
     } catch (error) {
-      alert("ошибка какая-то");
+      alert(error);
     }
-    // alert(this.orderId)
+    }
   },
   computed: {
     orderId() {

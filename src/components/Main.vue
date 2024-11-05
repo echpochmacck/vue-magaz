@@ -4,7 +4,7 @@
       <div class="products-index">
         <h1>Витрина</h1>
         <div class="user-cash">
-          <h3>Ваш баланс: <br />{{ cash }}</h3>
+          <!-- <h3>Ваш баланс: <br />{{ cash }}</h3> -->
         </div>
 
         <div
@@ -13,9 +13,93 @@
           data-pjax-push-state=""
           data-pjax-timeout="1000"
         >
-          <div id="product-list" class="grid-view">
-            <!-- <div class="summary">Показаны записи <b>1-2</b> из <b>2</b>.</div> -->
-            <table class="table table-striped table-bordered">
+          <div id="product-list" class="grid-view" v-if="goods">
+            <product-card
+              v-for="(item, index) in goods"
+              :key="index"
+              :product="item"
+              @addProduct="addProduct(item.id)"
+            ></product-card>
+            <nav id="w0"></nav>
+          </div>
+        </div>
+      </div>
+      <!-- < a class="btn btn-primary" href="/orders/make-order">Заказать</> -->
+    </div>
+  </main>
+</template>
+
+<script>
+import ProductCard from "./ProductCard.vue";
+export default {
+  components: {
+    ProductCard,
+  },
+  data() {
+    return {
+      goods: null,
+      cash: null,
+    };
+  },
+  mounted() {
+    // alert(this.$foo)
+    this.fetchProducts()
+  },
+
+  methods: {
+    async fetchProducts() {
+      try {
+        // alert("sda");
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + this.$token.value);
+
+        const requestOptions = {
+          method: "GET",
+          headers: myHeaders,
+          redirect: "follow",
+        };
+
+        const response = await fetch(
+          "http://spa-magaz/api/products",
+          requestOptions
+        );
+        if (response.status == 200) {
+          const data = await response.json();
+          this.goods = data.data;
+        } else if (response.status == 404) {
+          this.$router.push("/NotFound");
+        }
+      } catch (error) {
+        alert("ошибка какая-то");
+      }
+    },
+    addProduct(index) {
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer " + this.$token.value);
+      const formdata = new FormData();
+      formdata.append("product_id", index);
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: formdata,
+        redirect: "follow",
+      };
+      fetch("http://spa-magaz/api/order/basket", requestOptions);
+      // .catch((error) => console.error(error));
+    },
+  },
+};
+</script>
+
+<style>
+.grid-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+</style>
+
+<table class="table table-striped table-bordered">
               <thead>
                 <tr>
                   <th>
@@ -37,18 +121,6 @@
                 </tr>
               </thead>
               <tbody>
-                <tr data-key="7">
-                  <td>3232</td>
-                  <td>вывы</td>
-                  <td>132</td>
-                  <td>
-                    <a
-                      class="btn btn-primary product-order"
-                      href="/site/index?product_id=7"
-                      >добавить</a
-                    >
-                  </td>
-                </tr>
                 <tr data-key="7" v-for="(item, index) in goods" :key="index">
                   <td>{{ item.title }}</td>
                   <td>{{ item.descrition }}</td>
@@ -82,69 +154,3 @@
                 </tr> -->
               </tbody>
             </table>
-            <nav id="w0"></nav>
-          </div>
-        </div>
-      </div>
-      <!-- < a class="btn btn-primary" href="/orders/make-order">Заказать</> -->
-    </div>
-  </main>
-</template>
-
-<script>
-export default {
-  data() {
-    return {
-      goods: null,
-      cash: null,
-    };
-  },
-  beforeMount() {
-    // alert(this.$foo)
-    try {
-      const myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + this.$token.value);
-
-      const requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-      };
-
-      fetch("http://spa-magaz/api/products", requestOptions)
-        .then(async (response) => {
-          if (response.status == 200) {
-            const data = await response.json();
-            this.goods = data.data;
-          } else if (response.status == 404) {
-            this.$router.push("/NotFound");
-          }
-        })
-        .catch((error) => console.error(error));
-    } catch (error) {
-      alert("ошибка какая-то");
-    }
-  },
-
-  methods: {
-    addProduct(index) {
-      const myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + this.$token.value);
-      const formdata = new FormData();
-      formdata.append("product_id", index);
-      const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: formdata,
-        redirect: "follow",
-      };
-      fetch("http://spa-magaz/api/order/basket", requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error));
-    },
-  },
-};
-</script>
-
-<style></style>

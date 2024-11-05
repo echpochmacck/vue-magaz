@@ -1,7 +1,6 @@
 <template>
   <main id="main" class="flex-shrink-0" role="main">
     <div class="container">
-      
       <div class="orders-index">
         <h1>Orders</h1>
 
@@ -12,7 +11,6 @@
           data-pjax-timeout="1000"
         >
           <div id="w0" class="grid-view">
-            <div class="summary">Показаны записи <b>1-2</b> из <b>2</b>.</div>
             <table class="table table-striped table-bordered">
               <thead>
                 <tr>
@@ -45,7 +43,7 @@
                   <!-- fifiашп -->
                   <td>
                     <router-link
-                      :to="{ name: 'Order', params: { id: order.id} }"
+                      :to="{ name: 'Order', params: { id: order.id } }"
                       custom
                       v-slot="{ navigate }"
                       v-if="!token"
@@ -74,34 +72,36 @@ export default {
     };
   },
   mounted() {
-    try {
-      const myHeaders = new Headers();
-      myHeaders.append(
-        "Authorization",
-        "Bearer " +  this.$token.value
-      );
+    this.getOrders()
+  },
+  methods: {
+    async getOrders() {
+      try {
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + this.$token.value);
 
-      const requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-      };
+        const requestOptions = {
+          method: "GET",
+          headers: myHeaders,
+          redirect: "follow",
+        };
 
-      fetch("http://spa-magaz/api/orders", requestOptions)
-        .then((response) => {
-          if (response.status == 200) {
-            console.log(response);
-            return response.json();
-          } else if(response.status == 404){
-            // alert('dsd')
-            this.$router.push('/NotFound')
-          }
-        })
-        .then((result) => (this.orders = result.data))
-        .catch((error) => console.error(error));
-    } catch (error) {
-      alert("ошибка какая-то");
-    }
+        const response = await fetch(
+          "http://spa-magaz/api/orders",
+          requestOptions
+        );
+        if (response.status == 200) {
+          console.log(response);
+          const res = await response.json();
+          this.orders = res.data   
+        } else if (response.status == 404) {
+          // alert('dsd')
+          this.$router.push("/NotFound");
+        }
+      } catch (error) {
+        alert("ошибка какая-то");
+      }
+    },
   },
 };
 </script>
