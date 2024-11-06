@@ -1,7 +1,7 @@
 <template>
   <main id="main" class="flex-shrink-0 my-5" role="main">
     <div class="container pt-3">
-      <h1 v-if="errors.email">saddsd</h1>
+      <!-- <h1 v-if="errors.email">saddsd</h1> -->
       <div class="site-register mt-5">
         <form id="w0" action="" method="" @submit.prevent="submitHandler">
           <div class="mb-3 field-user-name required">
@@ -9,7 +9,7 @@
             <input
               type="text"
               id="user-name"
-              class="form-control is-invalid"
+              class="form-control"
               name="User[name]"
               autofocus=""
               aria-required="true"
@@ -27,10 +27,10 @@
               aria-required="true"
               v-model="surname"
             />
-
-            <div class="invalid-feedback" v-if="errors.name">
-              {{ errors.name[0] }}
+<div class="invalid-feedback" v-if="errors.surname">
+              {{ errors.surname[0] }}
             </div>
+            
           </div>
           <div class="mb-3 field-user-login required">
             <label class="form-label" for="user-login">Логин</label>
@@ -43,8 +43,8 @@
               v-model="login"
             />
 
-            <div class="invalid-feedback" v-if="errors.surname">
-              {{ errors.surname[0] }}
+            <div class="invalid-feedback" v-if="errors.login">
+              {{ errors.login[0] }}
             </div>
           </div>
           <div class="mb-3 field-user-email required">
@@ -58,7 +58,7 @@
               v-model="email"
             />
 
-            <div class="invalid-feedback" v-if="errors">
+            <div class="invalid-feedback" v-if="errors.email">
               {{ errors.email[0] }}
             </div>
           </div>
@@ -138,8 +138,7 @@ export default {
       email: null,
       
         errors: {
-          name: ["Имя не может быть пустым"],
-          email: ["Email не может быть пустым"],
+        
         },
     };
   },
@@ -250,4 +249,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.invalid-feedback{
+  display: initial;
+}
+</style>
