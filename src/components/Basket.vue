@@ -4,6 +4,8 @@
       <div class="orders-index">
         <h1>Orders</h1>
 
+        <div><h3>Ваш бааланс {{cash}}</h3></div>
+
         <div
           id="p0"
           data-pjax-container=""
@@ -58,7 +60,7 @@
         <h3>Сумма заказа</h3>
         {{ totalSum }}
       </div>
-      <button class="btn btn-primary" @click="makeOreder">заказать</button>
+      <button class="btn btn-primary" @click="makeOreder" v-if="basket">заказать</button>
     </div>
   </main>
 </template>
@@ -89,10 +91,13 @@ export default {
           "http://spa-magaz/api/order/getBasket",
           requestOptions
         );
-        const res = await response.json();
-        this.basket = res.data.products;
+          const res = await response.json();
+        if (response.status == 200) {
+          this.basket = res.data.products;
+        }
+        this.cash = res.cash
       } catch (error) {
-        alert("ошибка какая-то");
+        alert(error);
       }
     },
     async addToBasket(index) {
@@ -141,7 +146,7 @@ export default {
       }
     },
 
-    makeOreder() {
+    async makeOreder() {
       const myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + this.$token.value);
       const requestOptions = {
@@ -150,18 +155,16 @@ export default {
         redirect: "follow",
       };
 
-      fetch("http://spa-magaz/api/order/make", requestOptions)
-        .then((response) => response.json())
-
-        // cпросить
-        .then((result) => {
-          if (!result.errors) {
-            this.$router.push("/");
-          } else {
-            alert(result.errors);
-          }
-        })
-        .catch((error) => alert(error));
+      const response = await fetch(
+        "http://spa-magaz/api/order/make",
+        requestOptions
+      );
+      const result = await response.json();
+      if (response.status == 200) {
+        this.$router.push("/");
+      } else {
+        alert(result.errors);
+      }
     },
   },
   computed: {
