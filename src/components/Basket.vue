@@ -4,7 +4,9 @@
       <div class="orders-index">
         <h1>Orders</h1>
 
-        <div><h3>Ваш бааланс {{cash}}</h3></div>
+        <div>
+          <h3>Ваш бааланс {{ cash }}</h3>
+        </div>
 
         <div
           id="p0"
@@ -18,6 +20,8 @@
                 <tr>
                   <th>#</th>
                   <th>Количество</th>
+                  <th>Количество в наличии</th>
+
                   <th>Название</th>
                   <th>Добавить в корзину</th>
                   <th>Удалить из корзины</th>
@@ -32,21 +36,24 @@
                 <tr v-else v-for="(product, index) in basket" :key="product.id">
                   <td>{{ index + 1 }}</td>
                   <td>{{ product.quantity }}</td>
+
+                  <td>{{ product.base_quantity }}</td>
+
                   <td>{{ product.title }}</td>
                   <td>
                     <button
                       class="btn btn-success"
-                      @click="addToBasket(product.id)"
+                      @click="addToBasket(index, product.id)"
                     >
-                      Добавить
+                      +
                     </button>
                   </td>
                   <td>
                     <button
                       class="btn btn-danger"
-                      @click="removeFromBasket(product.id)"
+                      @click="removeFromBasket(index, product.id)"
                     >
-                      Удалить
+                      -
                     </button>
                   </td>
                 </tr>
@@ -60,7 +67,9 @@
         <h3>Сумма заказа</h3>
         {{ totalSum }}
       </div>
-      <button class="btn btn-primary" @click="makeOreder" v-if="basket">заказать</button>
+      <button class="btn btn-primary" @click="makeOreder" v-if="basket">
+        заказать
+      </button>
     </div>
   </main>
 </template>
@@ -91,39 +100,60 @@ export default {
           "http://spa-magaz/api/order/getBasket",
           requestOptions
         );
-          const res = await response.json();
+        const res = await response.json();
         if (response.status == 200) {
           this.basket = res.data.products;
         }
-        this.cash = res.cash
+        this.cash = res.cash;
+        // alert(this.cash);
       } catch (error) {
         alert(error);
       }
     },
-    async addToBasket(index) {
-      const myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + this.$token.value);
-      const formdata = new FormData();
-      formdata.append("product_id", index);
-      const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: formdata,
-        redirect: "follow",
-      };
-      const response = await fetch(
-        "http://spa-magaz/api/order/basket",
-        requestOptions
-      );
-      if (response.status == 200) {
-        const data = await response.json();
-        this.basket = data.data.products;
-      } else if (response.status == 404) {
-        this.$router.push("/NotFound");
+    async addToBasket(id, index) {
+      let product = this.basket[id];
+      if (product.base_quantity < 1 + product.quantity) {
+        alert("Нельзя заказать больше чем есть на складе");
+      } else {
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + this.$token.value);
+        const formdata = new FormData();
+        formdata.append("product_id", index);
+        const requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: formdata,
+          redirect: "follow",
+        };
+        const response = await fetch(
+          "http://spa-magaz/api/order/basket",
+          requestOptions
+        );
+        if (response.status == 200) {
+          const data = await response.json();
+          this.basket = data.data.products;
+        } else if (response.status == 404) {
+          this.$router.push("/NotFound");
+        }
       }
       // .then((result) => (this.basket = result.data.products))
     },
-    async removeFromBasket(index) {
+    removeFromBasket(id, index) {
+      const product = this.basket[id];
+      console.log(product);
+      if (product.quantity > 1) {
+        this.fetchToRemove(index);
+        console.log(index)
+      } else if (product.quantity == 1) {
+        const conf = confirm(
+          "вы уверены что хотите удалить последний товар из корзины"
+        );
+        if (conf) {
+          this.fetchToRemove(index);
+        }
+      }
+    },
+    async fetchToRemove(index) {
       const myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + this.$token.value);
       const formdata = new FormData();

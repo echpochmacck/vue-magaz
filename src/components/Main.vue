@@ -60,7 +60,7 @@ export default {
         };
 
         const response = await fetch(
-          "http://spa-magaz/api/products",
+          `${this.$url}/api/products`,
           requestOptions
         );
         if (response.status == 200) {

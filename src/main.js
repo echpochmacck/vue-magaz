@@ -9,6 +9,8 @@ const isAdmin = ref(localStorage.getItem('isAdmin') || null)
 
 app.config.globalProperties.$token = token;
 app.config.globalProperties.$isAdmin = isAdmin;
+app.config.globalProperties.$url = 'http://spa-magaz';
+
 
 
 app.use(router).mount('#app')

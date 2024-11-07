@@ -42,16 +42,25 @@
                   <td>{{ order.sum }}</td>
                   <!-- fifiашп -->
                   <td>
-                    <router-link
-                      :to="{ name: 'Order', params: { id: order.id } }"
-                      custom
-                      v-slot="{ navigate }"
-                      v-if="!token"
-                    >
-                      <a href="#" class="nav-link" @click="navigate"
-                        >Посмотреть</a
+                    <div class="pr-3">
+                      <router-link
+                        :to="{ name: 'Order', params: { id: order.id } }"
+                        custom
+                        v-slot="{ navigate }"
+                        v-if="!token"
                       >
-                    </router-link>
+                        <a href="#" class="btn btn-success" @click="navigate"
+                          >Посмотреть</a
+                        >
+                      </router-link>
+                    </div>
+                    <button
+                      class="btn btn-danger mt-3"
+                      v-if="order.status == 'Новый'"
+                      @click="deleteOrder(order.id)"
+                    >
+                      Отменить
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -72,7 +81,7 @@ export default {
     };
   },
   mounted() {
-    this.getOrders()
+    this.getOrders();
   },
   methods: {
     async getOrders() {
@@ -93,13 +102,39 @@ export default {
         if (response.status == 200) {
           console.log(response);
           const res = await response.json();
-          this.orders = res.data   
+          this.orders = res.data;
         } else if (response.status == 404) {
           // alert('dsd')
           this.$router.push("/NotFound");
         }
       } catch (error) {
         alert("ошибка какая-то");
+      }
+    },
+    async deleteOrder(id) {
+      try {
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + this.$token.value);
+
+        const requestOptions = {
+          method: "DELETE",
+          headers: myHeaders,
+          redirect: "follow",
+        };
+
+        const response = await fetch(
+          `http://spa-magaz/api/orders/${id}`,
+          requestOptions
+        );
+
+        if (response.status == 204) {
+          // this.$router.push("/Main"); 
+          this.getOrders();
+        } else if (response.status == 404) {
+          this.$router.push("/NotFound");
+        }
+      } catch (error) {
+        alert(error);
       }
     },
   },
