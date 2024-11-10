@@ -11,7 +11,7 @@
             </tr> -->
             <tr>
               <th>Статус</th>
-              <td>{{ order.status }}</td>
+              <td>{{ products[0].status_title }}</td>
             </tr>
             <tr>
               <th>Дата Оформления</th>
@@ -33,6 +33,7 @@ export default {
   data() {
     return {
       order: null,
+      products: null,
       //   cash: null,
     };
   },
@@ -60,6 +61,8 @@ export default {
       if (response.status == 200) {
         const res = await response.json();
         this.order = res.data.order
+        this.products = res.data.products
+
         console.log(res.data.order)
       } else if (response.status == 404) {
         this.$router.push("/NotFound");

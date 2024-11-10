@@ -25,6 +25,7 @@
                   <th>Название</th>
                   <th>Добавить в корзину</th>
                   <th>Удалить из корзины</th>
+                  <th>Удалить позицию</th>
                 </tr>
               </thead>
               <tbody>
@@ -54,6 +55,14 @@
                       @click="removeFromBasket(index, product.id)"
                     >
                       -
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      class="btn btn-danger"
+                      @click="removePosition(product.id)"
+                    >
+                      удалить позицию
                     </button>
                   </td>
                 </tr>
@@ -143,7 +152,7 @@ export default {
       console.log(product);
       if (product.quantity > 1) {
         this.fetchToRemove(index);
-        console.log(index)
+        console.log(index);
       } else if (product.quantity == 1) {
         const conf = confirm(
           "вы уверены что хотите удалить последний товар из корзины"
@@ -194,6 +203,31 @@ export default {
         this.$router.push("/");
       } else {
         alert(result.errors);
+      }
+    },
+
+    async removePosition(index) {
+      if (confirm("Вы уверены что хотите удалить товар из корзины")) {
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer " + this.$token.value);
+        const formdata = new FormData();
+        formdata.append("product_id", index);
+        const requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: formdata,
+          redirect: "follow",
+        };
+        const response = await fetch(
+          "http://spa-magaz/api/order/basket/removePosition",
+          requestOptions
+        );
+        if (response.status == 200) {
+          const data = await response.json();
+          this.basket = data.data.products;
+        } else if (response.status == 404) {
+          this.$router.push("/NotFound");
+        }
       }
     },
   },

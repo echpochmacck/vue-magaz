@@ -45,6 +45,7 @@
                     >
                   </th>
                   <th>Изменить статус</th>
+                  <th>Изменить статус</th>
                 </tr>
               </thead>
               <tbody v-if="orders">
@@ -67,6 +68,17 @@
                       >
                     </router-link>
                   </td>
+                  <th>
+                    <form action="/submit" method="post">
+                      <label for="simple-select">Выберите вариант:</label>
+                      <select id="simple-select" name="option">
+                        <option value="option1">Вариант 1</option>
+                        <option value="option2">Вариант 2</option>
+                        <option value="option3">Вариант 3</option>
+                      </select>
+                      <button type="submit">Отправить</button>
+                    </form>
+                  </th>
                 </tr>
               </tbody>
             </table>
@@ -87,10 +99,10 @@ export default {
   },
   mounted() {
     //    alert(this.$token.value)
-    this.getUserOrders()
+    this.getUserOrders();
   },
   methods: {
-   async  getUserOrders() {
+    async getUserOrders() {
       try {
         const myHeaders = new Headers();
         myHeaders.append("Authorization", "Bearer " + this.$token.value);
@@ -101,14 +113,17 @@ export default {
           redirect: "follow",
         };
 
-        const response = await fetch("http://spa-magaz/api/admin/orders", requestOptions)
-            if (response.status === 200) {
-              const result = await response.json();
-              this.orders = result.data;
-            } else if (response.status == 404) {
-              // alert('dsd')
-              this.$router.push("/NotFound");
-            }
+        const response = await fetch(
+          "http://spa-magaz/api/admin/orders",
+          requestOptions
+        );
+        if (response.status === 200) {
+          const result = await response.json();
+          this.orders = result.data;
+        } else if (response.status == 404) {
+          // alert('dsd')
+          this.$router.push("/NotFound");
+        }
       } catch (error) {
         alert("ошибка какая-то");
       }

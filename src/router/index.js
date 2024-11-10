@@ -31,8 +31,12 @@ const routes = [
         // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
         next();
       } else {
+        if (localStorage.getItem('isAdmin') == 'true') {
+          next('/admin');
+        } else {
+          next('/main');
+        }
         // Если токен есть, перенаправляем на страницу "/main"
-        next('/main');
       }
     },
   },
@@ -41,7 +45,7 @@ const routes = [
     name: 'login',
     component: Login,
     beforeEnter: () => {
-      if (!localStorage.getItem('item')) {
+      if (!localStorage.getItem('token')) {
         return true
 
       } else {
@@ -53,32 +57,86 @@ const routes = [
     path: '/main',
     name: 'main',
     component: Main,
-    beforeEnter: () => {
-      return localStorage.getItem('item')
+    beforeEnter: (to, from, next) => {
+
+      if (localStorage.getItem('token')) {
+        if (localStorage.getItem('isAdmin') !== 'true') {
+          // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
+          next();
+        } else {
+
+          next('/admin');
+        }
+      } else {
+
+        // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
+        next('/');
+
+      }
     }
   },
   {
     path: '/basket',
     name: 'basket',
     component: Basket,
-    beforeEnter: () => {
-      return localStorage.getItem('item')
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('token')) {
+        if (localStorage.getItem('isAdmin') !== 'true') {
+          // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
+          next();
+        } else {
+
+          next('/admin');
+        }
+      } else {
+
+        // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
+        next('/');
+
+      }
     }
-    },
+  },
   {
     path: '/user',
     name: 'user',
     component: UserInfo,
-    beforeEnter: () => {
-      return localStorage.getItem('item')
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('token')) {
+        if (localStorage.getItem('isAdmin') !== 'true') {
+          // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
+          next();
+        } else {
+
+          next('/admin');
+        }
+      } else {
+
+        // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
+        next('/');
+
+      }
     }
   },
   {
     path: '/orders',
     name: 'orders',
     component: Orders,
-    beforeEnter: () => {
-      return localStorage.getItem('item')
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('token')) {
+        if (localStorage.getItem('isAdmin') !== 'true') {
+          // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
+          next();
+        } else {
+
+          next('/admin');
+        }
+
+      } else {
+
+        // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
+        next('/');
+
+      }
     }
   },
 
@@ -86,16 +144,41 @@ const routes = [
     path: '/order/:id',
     name: 'Order',
     component: Order,
-    beforeEnter: () => {
-      return localStorage.getItem('item')
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('token')) {
+        if (localStorage.getItem('isAdmin') !== 'true') {
+          // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
+          next();
+        } else {
+          next('/admin');
+        }
+      } else {
+
+        // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
+        next('/');
+
+      }
     }
   },
   {
     path: '/admin',
     name: 'Admin',
-    component: localStorage.getItem('isAdmin') == 'true' ? UserOrders : Main,
-    beforeEnter: () => {
-      return localStorage.getItem('item')
+    component: UserOrders,
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('token')) {
+        if (localStorage.getItem('isAdmin') == 'true') {
+          // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
+          next();
+        } else {
+
+          next('/admin');
+        }
+      } else {
+
+        // Если токен отсутствует, продолжаем навигацию (например, к странице логина)
+        next('/');
+
+      }
     }
   },
   {

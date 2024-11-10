@@ -38,7 +38,7 @@
               </li>
             </router-link>
             <div v-if="$token.value" class="isUser">
-              <router-link to="/basket" custom v-slot="{ navigate }">
+              <router-link to="/basket" custom v-slot="{ navigate }" v-if="$isAdmin.value !== 'true'">
                 <li class="nav-item">
                   <a href="#" class="nav-link" @click="navigate"
                     >просмотреть корзину</a
@@ -46,14 +46,14 @@
                 </li>
               </router-link>
 
-              <router-link to="/user" custom v-slot="{ navigate }">
+              <router-link to="/user" custom v-slot="{ navigate }" v-if="$isAdmin.value !== 'true'">
                 <li class="nav-item">
                   <a href="#" class="nav-link" @click="navigate"
                     >Личнаый кабинет</a
                   >
                 </li>
               </router-link>
-              <router-link to="/orders" custom v-slot="{ navigate }">
+              <router-link to="/orders" custom v-slot="{ navigate }" v-if="$isAdmin.value !== 'true'">
                 <li class="nav-item">
                   <a href="#" class="nav-link" @click="navigate"
                     >Посмотреть заказы</a

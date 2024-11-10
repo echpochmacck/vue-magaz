@@ -37,7 +37,7 @@
               <tbody v-if="orders">
                 <tr data-key="13" v-for="order in orders" :key="order.id">
                   <td>{{ order.id }}</td>
-                  <td>{{ order.status }}</td>
+                  <td>{{ order.status_title }}</td>
                   <td>{{ order.order_date }}</td>
                   <td>{{ order.sum }}</td>
                   <!-- fifiашп -->
@@ -128,7 +128,7 @@ export default {
         );
 
         if (response.status == 204) {
-          // this.$router.push("/Main"); 
+          // this.$router.push("/Main");
           this.getOrders();
         } else if (response.status == 404) {
           this.$router.push("/NotFound");

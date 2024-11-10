@@ -43,7 +43,7 @@ export default {
   },
   mounted() {
     // alert(this.$foo)
-    this.fetchProducts()
+    this.fetchProducts();
   },
 
   methods: {
