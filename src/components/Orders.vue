@@ -82,6 +82,7 @@ export default {
   },
   mounted() {
     this.getOrders();
+
   },
   methods: {
     async getOrders() {
@@ -96,7 +97,7 @@ export default {
         };
 
         const response = await fetch(
-          "http://spa-magaz/api/orders",
+          `${this.$url}/api/orders`,
           requestOptions
         );
         if (response.status == 200) {
@@ -111,6 +112,8 @@ export default {
         alert("ошибка какая-то");
       }
     },
+
+    
     async deleteOrder(id) {
       try {
         const myHeaders = new Headers();
