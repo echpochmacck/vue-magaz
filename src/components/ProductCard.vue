@@ -14,11 +14,18 @@
     <img
       :src="
         product.file_name
-          ? `http://spa-magaz/api/file/${product.file_name}`
+          ? `${this.$url}/src/${product.file_name}`
           : require('@/img/12452-0197-PE-shinshilla-seraya.jpg')
       "
       class="card-img-top"
-      alt="..."
+      alt="Изображение продукта"
+      width="50%"
+      height="50%"
+      :onerror="
+        'this.src=`' +
+        require('@/img/12452-0197-PE-shinshilla-seraya.jpg') +
+        '`'
+      "
     />
     <div class="card-body">
       <h5 class="card-title">{{ product.title }}</h5>
