@@ -4,7 +4,7 @@
 # vue-magaz
 ## About project
 ```
-first whole normal project on vue 
+first whole normal project on vue, api for that project is in repository named spa-magaz 
 ```
 ## Project setup
 ```
