@@ -4,7 +4,7 @@
 # vue-magaz
 ## About project
 ```
-first whole normal project on vue, api for that project is in repository named spa-magaz 
+first whole normal project on vu(optionsApi), api for that project in branch api(have to composer update)
 ```
 ## Project setup
 ```
